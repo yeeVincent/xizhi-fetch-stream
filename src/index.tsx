@@ -1,8 +1,8 @@
-type a  =  { b: string}
-const MyComponent = (props:a  ) => {
-  console.log(props);
+
+const FetchStream = () => {
+
   
-  return <div>{props.b}</div>;
+  return <div>{ 123}</div>;
 };
 
-export default MyComponent;
+export default FetchStream;
