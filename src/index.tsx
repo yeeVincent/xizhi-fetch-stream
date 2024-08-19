@@ -6,4 +6,4 @@ const FetchStream = () => {
   </>;
 };
 
-export default FetchStream;
+export default (FetchStream);
