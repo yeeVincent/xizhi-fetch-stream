@@ -1,8 +1,9 @@
+import Panel from './panel'
 
 const FetchStream = () => {
-
-  
-  return <div>{ 123}</div>;
+  return <>
+    <Panel></Panel>
+  </>;
 };
 
 export default FetchStream;
