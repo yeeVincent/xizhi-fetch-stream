@@ -16,8 +16,8 @@ app.get('/stream', (req, res) => {
 
   const intervalId = setInterval(() => {
     count += 1;
+    res.write(`id: ${count}\n`);
     res.write(`data: Message ${count}\n\n`);
-
     // Optionally, stop the stream after a certain number of messages
     if (count >= 10) {
       clearInterval(intervalId);
