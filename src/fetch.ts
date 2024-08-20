@@ -10,7 +10,7 @@ class StreamFetcher {
   constructor() {
   }
 
-  public start(url: string, params: FetchEventSourceInit, ) {
+  public fetch(url: string, params: FetchEventSourceInit, ) {
     // const { onopen, onmessage, onclose, onerror } = params
     fetchEventSource(url, params);
   }
