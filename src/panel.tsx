@@ -1,12 +1,13 @@
-import { Fragment, memo, useEffect, useState } from "react";
+import { FC, Fragment, memo, useEffect, useState } from "react";
 import StreamFetcher from "./fetch";
 import { getStreamMap } from "./utils";
 import { EventSourceMessage } from "@microsoft/fetch-event-source";
+import { FetchStreamProps } from ".";
 
 const fetcher = new StreamFetcher()
 
-const Panel = () => {
-  
+const Panel : FC<FetchStreamProps>= (props) => {
+  const { CustomStreamItem } = props
   const { start } = fetcher
   const initMap = getStreamMap()
   const [streamMap, setStreamMap] = useState(initMap)
@@ -15,7 +16,7 @@ const Panel = () => {
   const setStreamMapFn = (event: EventSourceMessage) => {
     setStreamMap(prevStreamMap => {
       const newStreamMap = getStreamMap(prevStreamMap)
-      newStreamMap.set(event.id, event.data)
+      newStreamMap.set(event.id, event)
       return newStreamMap
     })
   }
@@ -26,6 +27,8 @@ const Panel = () => {
       },
       onmessage(event) {
         console.log(event, 'ev');
+        // 让外部传入的props.customMessage返回一个新的event, 这样可以让外界可以控制数据
+        // setStreamMapFn(props.customMessage)
         setStreamMapFn(event)
       },
     })
@@ -34,17 +37,18 @@ const Panel = () => {
   useEffect(() => {
     create()
   }, [])
-  const StreamItem = ({stream}: {stream: string}) => <span>{stream}</span>
+  const StreamItem = ({event}: {event: EventSourceMessage}) => <span>{event.data}</span>
   const streamList = Array.from(streamMap.values())
 
   return (
-    <div>
-      {streamList.map(stream => (
-        <Fragment key={stream}>
-          {<StreamItem stream={stream}></StreamItem>}
+    <>
+      {streamList.map(event => (
+        <Fragment key={event.id}>
+          {CustomStreamItem && <CustomStreamItem event={event}></CustomStreamItem>}
+          {!CustomStreamItem &&<StreamItem event={event}></StreamItem>}
         </Fragment>
       ))}
-    </div>
+    </>
   );
 };
 
