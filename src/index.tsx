@@ -8,7 +8,7 @@ export interface FetchStreamProps {
   CustomStreamItem ?: FC<{event: EventSourceMessage}>
 }
 
-interface FetchEventSourceUpdateInit extends FetchEventSourceInit {
+export interface FetchEventSourceUpdateInit extends FetchEventSourceInit {
   headers?: Record<string, string>
   method?: 'POST' | 'GET' | 'PUT' | 'DELETE' | 'PATCH'
   /** 回传EventSourceMessage, 以修改数据 */
