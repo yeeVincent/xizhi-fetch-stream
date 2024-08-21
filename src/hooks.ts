@@ -29,10 +29,15 @@ export const useStreamList = () => {
       })
     }
 
+    const reset = () => {
+      setStreamMap(getStreamMap())
+    } 
+
     const list =  Array.from(streamMap.values())
 
     return {
       list,
+      reset,
       setItem,
       getItem,
       removeItem

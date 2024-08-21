@@ -1,10 +1,6 @@
 import { fetchEventSource, FetchEventSourceInit } from '@microsoft/fetch-event-source';
 
 
-// interface StreamFetcherOptions extends FetchEventSourceInit {
-//   signal: AbortSignal,
-//   abortAsError: true,
-// }
 
 class StreamFetcher {
   constructor() {

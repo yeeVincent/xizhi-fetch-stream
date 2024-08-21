@@ -9,6 +9,8 @@ export interface FetchStreamProps {
 }
 
 interface FetchEventSourceUpdateInit extends FetchEventSourceInit {
+  headers?: Record<string, string>
+  method?: 'POST' | 'GET' | 'PUT' | 'DELETE' | 'PATCH'
   /** 回传EventSourceMessage, 以修改数据 */
   onmessage: (event: EventSourceMessage) => EventSourceMessage
 }
@@ -16,7 +18,7 @@ interface FetchEventSourceUpdateInit extends FetchEventSourceInit {
 const FetchStream: FC<FetchStreamProps> = (props) => {
   const { CustomStreamItem, } = props
   const { fetch } = new StreamFetcher()
-  const {list : streamList, setItem: setStreamItem, getItem: getStreamItem, removeItem: removeStreamItem} = useStreamList()
+  const {list : streamList,reset: resetStreamList,  setItem: setStreamItem, getItem: getStreamItem, removeItem: removeStreamItem} = useStreamList()
   const ref = useRef<{
     start: (url: string, params: FetchEventSourceUpdateInit) => void;
     stop: () => void;
@@ -47,9 +49,14 @@ const FetchStream: FC<FetchStreamProps> = (props) => {
   const stop = () => {
     abortControllerRef.current.abort();
   }
+
+  const reset = () => {
+    resetStreamList()
+  }
   useImperativeHandle(ref, () => ({
     start,
     stop,
+    reset,
     setStreamItem,
     getStreamItem,
     removeStreamItem,
@@ -67,7 +74,9 @@ const FetchStream: FC<FetchStreamProps> = (props) => {
       },
     })
   }, [])
-  return <Panel streamList={streamList} CustomStreamItem={CustomStreamItem}  ></Panel>
+  return <>
+    <Panel streamList={streamList} CustomStreamItem={CustomStreamItem}></Panel>
+  </>
 };
 
 export default (FetchStream);
