@@ -1,4 +1,4 @@
-import {  FC, useEffect, useImperativeHandle, useRef } from 'react';
+import {  FC,  useImperativeHandle, useRef } from 'react';
 import Panel from './panel'
 import { EventSourceMessage, FetchEventSourceInit } from '@microsoft/fetch-event-source';
 import StreamFetcher from "./fetch";
@@ -65,15 +65,15 @@ const FetchStream: FC<FetchStreamProps> = (props) => {
 
 
 
-  useEffect(() => {
-    start('http://localhost:3000/stream', {
-      onmessage: (event) => {
-        console.log(event);
-        return event
+  // useEffect(() => {
+  //   start('http://localhost:3000/stream', {
+  //     onmessage: (event) => {
+  //       console.log(event);
+  //       return event
         
-      },
-    })
-  }, [])
+  //     },
+  //   })
+  // }, [])
   return <>
     <Panel streamList={streamList} CustomStreamItem={CustomStreamItem}></Panel>
   </>
