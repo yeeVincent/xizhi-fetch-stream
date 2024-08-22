@@ -1,7 +1,8 @@
 {
   "private": true,
   "scripts": {
-    "build": "turbo build",
+    "copy-files": "cp -r ./apps/Stream/dist/* ./dist",
+    "build": "turbo run build && mkdir dist && pnpm run copy-files",
     "dev": "turbo dev",
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
