@@ -1,72 +1,81 @@
-import { FC, useImperativeHandle, useRef, forwardRef } from 'react';
-import Panel from './panel';
-import { EventSourceMessage, FetchEventSourceInit } from '@microsoft/fetch-event-source';
-import StreamFetcher from "./fetch";
-import { useStreamList } from './hooks';
+import { type FC, forwardRef, useImperativeHandle, useRef } from 'react'
+
+import StreamFetcher, { type EventMessageType, type FetchEventSourceInitExtends } from './fetch'
+import { useStreamList } from './hooks'
+import StreamPanel from './panel'
 
 export interface FetchComponentProps {
   /** 自定义 StreamItem 组件 */
-  CustomStreamItem?: FC<{ event: EventSourceMessage }>;
-}
-
-export interface FetchEventSourceUpdateInit extends FetchEventSourceInit {
-  headers?: Record<string, string>;
-  method?: 'POST' | 'GET' | 'PUT' | 'DELETE' | 'PATCH';
-  /** 回传EventSourceMessage, 以修改数据 */
-  onmessage: (event: EventSourceMessage) => EventSourceMessage;
+  CustomStreamItem?: FC<{ event: EventMessageType<any> }>
 }
 
 export interface FetchComponentRef {
-    start: (url: string, params: FetchEventSourceUpdateInit) => void;
-    stop: () => void;
-    setStreamItem: (item: EventSourceMessage) => void;
-    getStreamItem: (id: string) => EventSourceMessage | undefined;
-    removeStreamItem: (id: string) => void;
+  streamList: EventMessageType<any>[]
+  start: (url: string, params: FetchEventSourceInitExtends) => void
+  stop: (cb?: any) => void
+  reset: () => void
+  setStreamItem: (item: EventMessageType<any>) => void
+  getStreamItem: (id: string) => EventMessageType<any> | undefined
+  removeStreamItem: (id: string) => void
 }
 
 const FetchStream = forwardRef<FetchComponentRef, FetchComponentProps>((props, ref) => {
-  const { CustomStreamItem } = props;
-  const { fetch } = new StreamFetcher();
-  const { list: streamList, reset: resetStreamList, setItem: setStreamItem, getItem: getStreamItem, removeItem: removeStreamItem } = useStreamList();
-  const abortControllerRef = useRef<AbortController>(new AbortController());
+  const { CustomStreamItem } = props
+  const { fetch } = new StreamFetcher()
+  const {
+    list: streamList,
+    reset: resetStreamList,
+    setItem: setStreamItem,
+    getItem: getStreamItem,
+    removeItem: removeStreamItem,
+  } = useStreamList()
+  const abortControllerRef = useRef<AbortController>(new AbortController())
 
-  const start = async (url: string, params: FetchEventSourceUpdateInit) => {
-    console.log(url, 'url');
-    if (params.signal) {
-      abortControllerRef.current = new AbortController();
-    }
-    fetch(url, {
-      ...params,
-      signal: abortControllerRef.current.signal,
-      onmessage(event) {
-        console.log(event, 'ev');
-        const newEvent = params.onmessage(event);
-        // 让外部传入的props.customMessage返回一个新的event, 这样可以让外界可以控制数据
-        setStreamItem(newEvent || event);
+  async function start(url: string, params: FetchEventSourceInitExtends) {
+    const defaultConfig: Partial<FetchEventSourceInitExtends> = {
+      method: 'GET',
+      params: {},
+      openWhenHidden: false,
+      headers: {
+        'Content-Type': 'application/json',
       },
-    });
-  };
+    }
+    abortControllerRef.current = new AbortController()
+    // 外部传入的signal会在此处被替换
+    params.signal = abortControllerRef.current.signal
+    fetch(url, {
+      ...defaultConfig,
+      ...params,
+      abortController: abortControllerRef.current,
+      onmessage(event: EventMessageType<any>) {
+        console.log(event, 'messageEv')
+        const newEvent = params?.onmessage?.(event)
+        // 让外部传入的props.customMessage返回一个新的event, 这样可以让外界可以控制数据
+        setStreamItem(newEvent || event)
+      },
+    })
+  }
 
-  const stop = () => {
-    abortControllerRef.current.abort();
-  };
+  const stop = (cb: any) => {
+    abortControllerRef.current.abort()
+    cb()
+  }
 
   const reset = () => {
-    resetStreamList();
-  };
+    resetStreamList()
+  }
 
   useImperativeHandle(ref, () => ({
+    streamList,
     start,
     stop,
     reset,
     setStreamItem,
     getStreamItem,
     removeStreamItem,
-  }));
+  }))
 
-  return (
-    <Panel streamList={streamList} CustomStreamItem={CustomStreamItem}></Panel>
-  );
-});
+  return <StreamPanel streamList={streamList} CustomStreamItem={CustomStreamItem}></StreamPanel>
+})
 
-export default FetchStream;
+export default FetchStream

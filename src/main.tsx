@@ -6,8 +6,5 @@ createRoot(document.getElementById('root')!).render(
   // <StrictMode>
   //  <FetchStream ></FetchStream>
   // </StrictMode>
-  <FetchStream></FetchStream>
-  
-  
-  ,
+  <FetchStream></FetchStream>,
 )
