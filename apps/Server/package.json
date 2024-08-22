@@ -1,0 +1,11 @@
+{
+  "type": "module",
+    "scripts": {
+    "dev": "node index.js"
+  },
+  "devDependencies": {
+    "express": "^4.19.2",
+    "cors": "^2.8.5"
+  },
+  "name": "cy-fetch-stream-server"
+}
