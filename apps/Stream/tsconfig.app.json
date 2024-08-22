@@ -25,6 +25,6 @@
     "emitDeclarationOnly": true, // 只生成类型定义文件
     "outDir": "dist/types" // 类型定义文件输出目录
   },
-  "include": ["src"],
+  "include": ["src/"],
   "exclude": ["mock"]
 }
