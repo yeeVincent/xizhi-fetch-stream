@@ -1,24 +1,15 @@
 {
-  "name": "@repo/stream",
+  "name": "@repo/template",
   "private": false,
   "version": "0.0.4",
   "type": "module",
-  "main": "dist/xizhi-fetch-stream.umd.js",
-  "module": "dist/xizhi-fetch-stream.es.js",
-  "types": "dist/types/index.d.ts",
-  "files": [
-    "dist"
-  ],
-  "exports": {
-    ".": "./src/index.tsx",
-    "./fetch": "./src/fetch.ts"
-  },
   "scripts": {
-    "build": "tsc -b && vite build",
+    "dev": "vite",
     "lint": "eslint .",
     "preview": "vite preview"
   },
   "dependencies": {
+    "@repo/stream": "workspace:*",
     "@microsoft/fetch-event-source": "^2.0.1",
     "lodash": "^4.17.21",
     "query-string": "^9.1.0",

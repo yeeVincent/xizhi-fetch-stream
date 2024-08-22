@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@repo/stream": ["apps/Stream/src"],
+      "@repo/template": ["apps/Template/src"]
+    },
+    "outDir": "dist",
+    "rootDir": ".",
+    "module": "commonjs",
+    "target": "es6",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": ["apps/**/*"]
+}

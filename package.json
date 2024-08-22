@@ -12,6 +12,9 @@
     "prettier": "^3.2.5",
     "turbo": "^2.0.14"
   },
+  "workspaces": [
+    "apps/*"
+  ],
   "packageManager": "pnpm@9.2.0",
   "name": "cy-fetch-stream-monorepo"
 }
