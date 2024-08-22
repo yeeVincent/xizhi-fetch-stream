@@ -12,8 +12,8 @@ const StreamPanel: FC<PanelProps> = (props) => {
 
   return (
     <>
-      {streamList.map((event) => (
-        <Fragment key={event?.id || event?.data || String(event)}>
+      {streamList.map((event, i) => (
+        <Fragment key={i}>
           {CustomStreamItem && <CustomStreamItem event={event}></CustomStreamItem>}
           {!CustomStreamItem && <StreamItem event={event}></StreamItem>}
         </Fragment>
