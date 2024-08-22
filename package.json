@@ -1,13 +1,15 @@
 {
-  "private": true,
+  "private": false,
   "scripts": {
     "copy-files": "cp -r ./apps/Stream/dist/* ./dist",
     "build": "turbo run build && mkdir dist && pnpm run copy-files",
     "dev": "turbo dev",
     "lint": "turbo lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+     "publish-packages": "turbo run build && changeset version && changeset publish"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.27.7",
     "eslint": "^8.57.0",
     "prettier": "^3.2.5",
     "turbo": "^2.0.14"
@@ -15,6 +17,7 @@
   "workspaces": [
     "apps/*"
   ],
+  "version": "0.0.7",
   "packageManager": "pnpm@9.2.0",
   "name": "cy-fetch-stream-monorepo"
 }
