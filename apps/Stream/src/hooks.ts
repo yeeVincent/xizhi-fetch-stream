@@ -1,6 +1,5 @@
 import { useState } from 'react'
 
-import { type EventMessageType } from './fetch'
 import { getStreamMap } from './utils'
 
 /**
@@ -11,16 +10,18 @@ export const useStreamList = () => {
   const [streamMap, setStreamMap] = useState(initMap)
 
   // 设置流的内容
-  const setItem = (event: EventMessageType<any>) => {
+  const setItem = <T>(event: T) => {
     setStreamMap((prevStreamMap) => {
       const newStreamMap = getStreamMap(prevStreamMap)
-      newStreamMap.set(event.id || event.data, event)
+      const length = newStreamMap.size
+      newStreamMap.set(String(length + 1), event)
       return newStreamMap
     })
   }
 
-  const getItem = (id: string) => {
-    return streamMap.get(id)
+  const getItem: <T>(id: string) => T | undefined = <T>(id: string) => {
+    if (!streamMap.has(id)) return
+    return streamMap.get(id) as T
   }
 
   const removeItem = (id: string) => {

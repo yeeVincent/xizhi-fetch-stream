@@ -1,6 +1,6 @@
-import { type FC, forwardRef, useImperativeHandle, useRef } from 'react'
+import { type FC, forwardRef, useEffect, useImperativeHandle, useRef } from 'react'
 
-import StreamFetcher, { type EventMessageType, type FetchEventSourceInitExtends } from './fetch'
+import StreamFetcher, { type FetchEventSourceInitExtends } from './fetch'
 import { useStreamList } from './hooks'
 import StreamPanel from './panel'
 
@@ -10,12 +10,12 @@ export interface FetchComponentProps {
 }
 
 export interface FetchComponentRef {
-  streamList: EventMessageType<any>[]
-  start: (url: string, params: FetchEventSourceInitExtends) => void
+  streamList: any[]
+  start: <T>(url: string, params: FetchEventSourceInitExtends<T>) => void
   stop: (cb?: any) => void
   reset: () => void
-  setStreamItem: (item: EventMessageType<any>) => void
-  getStreamItem: (id: string) => EventMessageType<any> | undefined
+  setStreamItem: <T>(item: T) => void
+  getStreamItem: <T>(id: string) => T | undefined
   removeStreamItem: (id: string) => void
 }
 
@@ -31,8 +31,8 @@ const FetchStream = forwardRef<FetchComponentRef, FetchComponentProps>((props, r
   } = useStreamList()
   const abortControllerRef = useRef<AbortController>(new AbortController())
 
-  async function start(url: string, params: FetchEventSourceInitExtends) {
-    const defaultConfig: Partial<FetchEventSourceInitExtends> = {
+  async function start<T>(url: string, params: FetchEventSourceInitExtends<T>) {
+    const defaultConfig: Partial<FetchEventSourceInitExtends<T>> = {
       method: 'GET',
       params: {},
       openWhenHidden: false,
@@ -43,11 +43,11 @@ const FetchStream = forwardRef<FetchComponentRef, FetchComponentProps>((props, r
     abortControllerRef.current = new AbortController()
     // 外部传入的signal会在此处被替换
     params.signal = abortControllerRef.current.signal
-    fetch(url, {
+    fetch<T>(url, {
       ...defaultConfig,
       ...params,
       abortController: abortControllerRef.current,
-      onmessage(event: any) {
+      onmessage(event: T) {
         console.log(event, 'messageEv')
         const newEvent = params?.onmessage?.(event)
         // 让外部传入的props.customMessage返回一个新的event, 这样可以让外界可以控制数据
@@ -56,9 +56,9 @@ const FetchStream = forwardRef<FetchComponentRef, FetchComponentProps>((props, r
     })
   }
 
-  const stop = (cb: any) => {
+  const stop = (cb?: any) => {
     abortControllerRef.current.abort()
-    cb()
+    cb?.()
   }
 
   const reset = () => {
@@ -74,6 +74,13 @@ const FetchStream = forwardRef<FetchComponentRef, FetchComponentProps>((props, r
     getStreamItem,
     removeStreamItem,
   }))
+
+  useEffect(() => {
+    return () => {
+      reset()
+      stop()
+    }
+  }, [])
 
   return <StreamPanel streamList={streamList} CustomStreamItem={CustomStreamItem}></StreamPanel>
 })

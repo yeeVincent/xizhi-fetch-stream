@@ -1,14 +1,13 @@
 import { type FC, Fragment } from 'react'
-import { type EventSourceMessage } from '@microsoft/fetch-event-source'
 
 interface PanelProps {
-  streamList: EventSourceMessage[]
-  CustomStreamItem?: FC<{ event: EventSourceMessage }>
+  streamList: unknown[]
+  CustomStreamItem?: FC<{ event: unknown }>
 }
 // 样式面板
 const StreamPanel: FC<PanelProps> = (props) => {
   const { CustomStreamItem, streamList } = props
-  const StreamItem = ({ event }: { event: EventSourceMessage }) => <span>{event.data}</span>
+  const StreamItem = ({ event }: { event: unknown }) => <span>{event as any}</span>
 
   return (
     <>

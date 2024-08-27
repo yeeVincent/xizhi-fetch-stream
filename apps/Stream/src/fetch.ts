@@ -17,9 +17,9 @@ export interface EventMessageType<T> extends Omit<EventSourceMessage, 'data'> {
   data: T
 }
 
-export interface FetchEventSourceInitExtends extends FetchEventSourceInit {
+export interface FetchEventSourceInitExtends<T> extends Omit<FetchEventSourceInit, 'onmessage'> {
   /** 接口需要传递的参数, 如果是get方法, 会拼接到url中, 如果是post方法, 会放在body中 */
-  params?: any
+  params?: { onmessage?: (ev: T) => T; [key: string]: any }
   abortController?: AbortController
   timeout?: number
   headers?: Record<string, string>
@@ -27,7 +27,7 @@ export interface FetchEventSourceInitExtends extends FetchEventSourceInit {
   /** @deprecated 请使用受控组件的stop方法, 该属性已废弃 */
   signal?: AbortSignal
   /** 回传EventSourceMessage, 以修改数据 */
-  onmessage?: (event: any) => any | void
+  onmessage?: (ev: T) => T | void
 }
 
 /** fetch的封装类 */
@@ -75,9 +75,9 @@ class StreamFetcher {
   /**
    * 响应拦截器
    */
-  protected async interceptorsResponse(response: EventSourceMessage) {
+  protected async interceptorsResponse<T>(response: EventSourceMessage) {
     try {
-      const res: any = JSON.parse(response.data)
+      const res: T = JSON.parse(response.data)
       return res
     } catch (error) {
       this.errorHandler(error)
@@ -101,7 +101,7 @@ class StreamFetcher {
 
   protected finallyHandler() {}
 
-  public fetch = async (url: string, params: FetchEventSourceInitExtends) => {
+  public fetch = async <T>(url: string, params: FetchEventSourceInitExtends<T>) => {
     const [timer, signal] = this.timeoutHandler(params.abortController!, params.timeout || 15000)
     try {
       const req = await this.interceptorsRequest({ url, ...params })
@@ -110,7 +110,7 @@ class StreamFetcher {
         ...req.options,
         signal,
         onmessage: async (ev) => {
-          const res = await this.interceptorsResponse(ev)
+          const res = await this.interceptorsResponse<T>(ev)
           params?.onmessage?.(res!)
         },
       })
