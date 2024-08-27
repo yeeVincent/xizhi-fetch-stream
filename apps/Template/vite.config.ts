@@ -1,6 +1,8 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react-swc';
 import dts from 'vite-plugin-dts';
+import sassDts from 'vite-plugin-sass-dts';
+import vitePluginImp from 'vite-plugin-imp';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -10,7 +12,16 @@ export default defineConfig({
       insertTypesEntry: true, // 插入类型入口
       outDir: 'dist/types', // 类型定义文件输出目录
       tsconfigPath: './tsconfig.app.json' // 指定 tsconfig 文件路径
-    })
+    }),
+    sassDts(),
+    vitePluginImp({
+      libList: [
+        {
+          libName: 'antd',
+          style: (name) => `antd/es/${name}/style`,
+        },
+      ],
+    }),
   ],
   build: {
     lib: {

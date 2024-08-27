@@ -1,0 +1,211 @@
+@mixin flexConfig($flexDirection: row, $alignItems: center, $justifyContent: flex-start) {
+  display: flex;
+  flex-direction: $flexDirection;
+  align-items: $alignItems;
+  justify-content: $justifyContent;
+}
+
+@mixin FontStyle($fontSize: 14, $lineHeight: 18, $color: #fff, $fontWeight: normal) {
+  font-size: $fontSize * 1px;
+  font-family: 'PingFang SC';
+  color: $color;
+  font-weight: $fontWeight;
+  line-height: $lineHeight * 1px;
+}
+
+.askModal {
+  width: 741px !important;
+}
+
+.askModalContent {
+  margin: 0;
+  scrollbar-width: 0;
+
+  ::-webkit-scrollbar {
+    width: 0;
+  }
+
+  border-radius: 15px 15px 0 0;
+}
+
+.askWrapper {
+  position: relative;
+  @include flexConfig(column, center, flex-end);
+  overflow: hidden;
+
+  .askWrapperInner {
+    width: 100%;
+    height: calc(60vh - 68px);
+
+    @include flexConfig(column, center, flex-end);
+
+    .messageWrapper {
+      width: 100%;
+      @include flexConfig(column, stretch, flex-start);
+      padding: 20px 0;
+      flex: 1;
+      box-sizing: border-box;
+      overflow: scroll;
+
+      .meContainer {
+        align-self: flex-end;
+        margin-bottom: 12px;
+        margin-left: 24px;
+        @include flexConfig(row, center, flex-end);
+
+        .me {
+          // @include flexConfig(row, center, center);
+          word-break: break-all;
+          padding: 12px;
+          gap: 10px;
+          margin-right: 10px;
+          border-radius: 12px 0px 12px 12px;
+          background: var(--color-theme-main);
+          color: #fff;
+          font-family: 'PingFang SC';
+          font-size: 16px;
+          font-style: normal;
+          font-weight: 400;
+          line-height: 24px;
+          /* 150% */
+        }
+
+        .errorBtn {
+          width: 32px;
+          height: 32px;
+          background: transparent;
+          padding: 0;
+          border-radius: 50%;
+          margin-right: 8px;
+
+          :active {
+            border: none;
+          }
+
+          @include flexConfig(row, center, center);
+
+          .errorIcon {
+            cursor: pointer;
+          }
+        }
+      }
+
+      .opContainer {
+        margin-bottom: 32px;
+        @include flexConfig(row, center, flex-start);
+
+        .op {
+          padding: 12px;
+          margin-right: 24px;
+          margin-bottom: 8px;
+          gap: 8px;
+          align-self: stretch;
+          border-radius: 0px 12px 12px 12px;
+          background: var(--color-bg-accent-gray-subtle-default, #f5f6fa);
+          @include FontStyle(16, 24, #101114, 400);
+        }
+
+        .reviewContainer {
+          align-self: flex-end;
+          @include flexConfig(row, center, flex-end);
+
+          .review {
+            margin-right: 24px;
+            @include flexConfig(row, center, center);
+            gap: 12px;
+
+            .thumbIcon__good {
+              border-radius: 50%;
+              width: 28px;
+              height: 28px;
+              padding: 4px;
+              box-sizing: border-box;
+              border: none;
+              cursor: pointer;
+              background: var(--color-bg-accent-gray-subtle-default, #f5f6fa);
+            }
+
+            .thumbIcon__navigator {
+              width: 28px;
+              height: 28px;
+              padding: 4px;
+              box-sizing: border-box;
+              border-radius: 50%;
+              border: none;
+              cursor: pointer;
+              background: var(--color-bg-accent-gray-subtle-default, #f5f6fa);
+              transform: rotate(180deg);
+            }
+          }
+        }
+      }
+
+      .op_streamContainer {
+        align-self: flex-start;
+        margin-bottom: 8px;
+        @include flexConfig(row, center, flex-start);
+        flex-wrap: wrap;
+        border-radius: 0px 12px 12px 12px;
+        padding: 12px;
+        margin-right: 24px;
+        background: var(--color-bg-accent-gray-subtle-default, #f5f6fa);
+        @include FontStyle(16, 24, #101114, 400);
+        gap: 0px;
+
+        .op {}
+
+        .op_streamContainer__loading {
+          display: block;
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          background: #101114;
+          flex-shrink: 0;
+          animation: breath 0.6s infinite;
+
+          @keyframes breath {
+            0% {
+              transform: scale(1);
+            }
+
+            50% {
+              transform: scale(1.5);
+            }
+
+            100% {
+              transform: scale(1);
+            }
+          }
+        }
+      }
+    }
+
+    .askModalAlertContainer {
+      height: 48px;
+      box-sizing: border-box;
+      @include flexConfig(row, center, space-between);
+      gap: 5px;
+    }
+
+    .textAreaContainer {
+      width: 100%;
+      margin-top: 4px;
+      flex-shrink: 0;
+      position: relative;
+      display: flex;
+      flex-direction: column-reverse;
+      border-radius: 12px;
+
+      .textArea {
+        border-radius: 12px;
+        padding: 12px 35px 12px 12px;
+        border: 1px solid var(--color-theme-main);
+        background: linear-gradient(91deg, #f8f6ff 0.18%, #f3f9ff 97.91%);
+      }
+    }
+  }
+}
+
+.errorTip {
+  @include FontStyle(12, 16, #fff, 500);
+}
