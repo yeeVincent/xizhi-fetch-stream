@@ -6,7 +6,7 @@ import StreamPanel from './panel'
 
 export interface FetchComponentProps {
   /** 自定义 StreamItem 组件 */
-  CustomStreamItem?: FC<{ event: EventMessageType<any> }>
+  CustomStreamItem?: FC<{ event: any }>
 }
 
 export interface FetchComponentRef {
@@ -47,7 +47,7 @@ const FetchStream = forwardRef<FetchComponentRef, FetchComponentProps>((props, r
       ...defaultConfig,
       ...params,
       abortController: abortControllerRef.current,
-      onmessage(event: EventMessageType<any>) {
+      onmessage(event: any) {
         console.log(event, 'messageEv')
         const newEvent = params?.onmessage?.(event)
         // 让外部传入的props.customMessage返回一个新的event, 这样可以让外界可以控制数据

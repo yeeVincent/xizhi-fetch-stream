@@ -27,9 +27,10 @@ export interface FetchEventSourceInitExtends extends FetchEventSourceInit {
   /** @deprecated 请使用受控组件的stop方法, 该属性已废弃 */
   signal?: AbortSignal
   /** 回传EventSourceMessage, 以修改数据 */
-  onmessage?: (event: EventMessageType<any>) => EventMessageType<any> | void
+  onmessage?: (event: any) => any | void
 }
 
+/** fetch的封装类 */
 class StreamFetcher {
   constructor() {}
   /**
@@ -76,7 +77,7 @@ class StreamFetcher {
    */
   protected async interceptorsResponse(response: EventSourceMessage) {
     try {
-      const res: EventMessageType<any> = JSON.parse(response.data)
+      const res: any = JSON.parse(response.data)
       return res
     } catch (error) {
       this.errorHandler(error)

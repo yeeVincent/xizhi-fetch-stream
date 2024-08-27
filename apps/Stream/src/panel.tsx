@@ -5,7 +5,7 @@ interface PanelProps {
   streamList: EventSourceMessage[]
   CustomStreamItem?: FC<{ event: EventSourceMessage }>
 }
-
+// 样式面板
 const StreamPanel: FC<PanelProps> = (props) => {
   const { CustomStreamItem, streamList } = props
   const StreamItem = ({ event }: { event: EventSourceMessage }) => <span>{event.data}</span>
