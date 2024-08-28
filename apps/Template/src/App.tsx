@@ -15,22 +15,9 @@ export const App = () => {
   const [history, setHistory] = useState<HistoryMessageItem[]>([])
   const scrollDomRef = useRef<HTMLDivElement>(null)
   const [text, setText] = useState('')
-
   const streamComponentRef = useRef<StreamComponentRef>(null)
   const [askModalVisible] = useState<boolean>(true)
-  const sendMessageAPI = async () => {
-    return {
-      id: 1,
-      data: {
-        id: 1,
-        sse_key: '123',
-        content: '你好',
-        finish: true,
-      },
-      code: 200,
-      msg: 'success',
-    }
-  }
+
   /**网络状态*/
   const [isOnline, setIsOnline] = useState(true)
   const { isOnline: systemOnlineStatus } = useNetworkStatus({
@@ -71,54 +58,44 @@ export const App = () => {
     streamComponentRef.current?.start(sse_key)
   }
 
-
   async function sendMessage() {
     if (!text.trim()) return
 
     const customId = history.length + 1
-    // setHistory((pre) => {
-    //   return [
-    //     ...pre,
-    //     {
-    //       id: customId,
-    //       content: text,
-    //       feedback: FeedbackStatus.None,
-    //       conversation_id,
-    //       status: AskMessageStatus.Sending,
-    //     },
-    //   ]
-    // })
+    setHistory((pre) => {
+      return [
+        ...pre,
+        {
+          id: customId,
+          content: text,
+          feedback: FeedbackStatus.None,
+          conversation_id: '1',
+          status: AskMessageStatus.Sending,
+        },
+      ]
+    })
 
     setText('')
+    setHistory((prev) => {
+      return prev.map((item) => {
+        if (item.id === customId) {
+          item.status = AskMessageStatus.Processing
+        }
+        return item
+      })
+    })
+    delay(() => {
+      fetchSSE('sse_key')
+      handleScrollToBottom()
+    }, 0)
 
-    try {
-      const res = await sendMessageAPI()
-      if (res) {
-        setHistory((prev) => {
-          return prev.map((item) => {
-            if (item.id === customId) {
-              item.id = res.data.id
-              item.status = AskMessageStatus.Processing
-            }
-            return item
-          })
-        })
-        delay(() => {
-          const sse_key = res.data.sse_key
-          fetchSSE(sse_key)
-          handleScrollToBottom()
-        }, 0)
-      }
-    } catch (error) {
-      console.log(error)
-    }
+
   }
   return <>
     <Modal
       classNames={{
         content: classNames(
-   styles.askModalContent,
- 
+          styles.askModalContent,
         ),
       }}
       className={classNames(styles.askModal)} footer={null} closable={false}

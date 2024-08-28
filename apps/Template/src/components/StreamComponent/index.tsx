@@ -32,7 +32,7 @@ const StreamComponent = forwardRef<StreamComponentRef, Props>((props, propsRef) 
   const {  setHistory, handleScrollToBottom,  } = props
   const ref = useRef<FetchComponentRef>(null)
   const baseUrl = 'http://localhost:3000'
-  const url = '/chat/message/streaming/'
+  const url = '/stream'
   const styles =  portraitStyles
 
   const defaultHeaders = {
@@ -61,7 +61,6 @@ const StreamComponent = forwardRef<StreamComponentRef, Props>((props, propsRef) 
       },
       params: {
         sse_key,
-        resp_is_sse: true,
       },
       onmessage(event) {
         handleScrollToBottom()
