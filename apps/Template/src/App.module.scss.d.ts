@@ -19,6 +19,8 @@ declare const classNames: {
   readonly askModalAlertContainer: "askModalAlertContainer";
   readonly textAreaContainer: "textAreaContainer";
   readonly textArea: "textArea";
+  readonly askModalSendText: "askModalSendText";
+  readonly askModalSendText__noContent: "askModalSendText__noContent";
   readonly errorTip: "errorTip";
 };
 export = classNames;

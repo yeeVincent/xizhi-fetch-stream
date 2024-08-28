@@ -190,8 +190,8 @@ export const App = () => {
           )}
           <div className={styles.textAreaContainer}>
             <TextArea
-              placeholder='输入你的问题，随时向AI老师提问...'
-              autoSize={{ minRows: 1, maxRows: 6 }}
+              placeholder='输入点什么吧...'
+              autoSize={{ minRows: 2, maxRows: 6 }}
               classNames={{
                 textarea: classNames(
                   styles.textArea,
@@ -201,14 +201,12 @@ export const App = () => {
               value={text.trim()}
               style={{ color: text.length ? '#101114' : '' }}
               onChange={(e) => setText(e.target.value?.trim())}
-
               onPressEnter={sendMessage}
             />
-
             <>
-
               <Button
                 onClick={sendMessage}
+                className={classNames(text.length ? styles.askModalSendText : styles.askModalSendText__noContent)}
               >
                 发送
               </Button>

@@ -29,6 +29,8 @@
 }
 
 .askWrapper {
+  --color-theme-main: #1b56ff;
+
   position: relative;
   @include flexConfig(column, center, flex-end);
   overflow: hidden;
@@ -60,7 +62,7 @@
           gap: 10px;
           margin-right: 10px;
           border-radius: 12px 0px 12px 12px;
-          background: var(--color-theme-main);
+          background: var(--color-theme-main, #1b56ff);
           color: #fff;
           font-family: 'PingFang SC';
           font-size: 16px;
@@ -201,6 +203,27 @@
         padding: 12px 35px 12px 12px;
         border: 1px solid var(--color-theme-main);
         background: linear-gradient(91deg, #f8f6ff 0.18%, #f3f9ff 97.91%);
+      }
+
+      .askModalSendText {
+        position: absolute;
+        right: 10px;
+        bottom: 7px;
+        border-radius: 8px;
+        height: 28px;
+        background: var(--color-theme-main);
+        outline: none;
+        @include FontStyle(14, 20, #fff, 400);
+      }
+      .askModalSendText__noContent {
+        position: absolute;
+        right: 10px;
+        bottom: 7px;
+        border-radius: 8px;
+        height: 28px;
+        background: var(--color-bg-accent-gray-bolder-disable, #e4e6ed);
+        outline: none;
+        @include FontStyle(14, 20, #fff, 400);
       }
     }
   }
