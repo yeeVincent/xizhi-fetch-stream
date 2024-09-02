@@ -1,5 +1,4 @@
 import { type EventSourceMessage, fetchEventSource, type FetchEventSourceInit } from '@microsoft/fetch-event-source'
-import { delay } from 'lodash'
 import queryString from 'query-string'
 
 export interface RequestProps {
@@ -24,15 +23,25 @@ export interface FetchEventSourceInitExtends<T> extends Omit<FetchEventSourceIni
   timeout?: number
   headers?: Record<string, string>
   method?: 'POST' | 'GET' | 'PUT' | 'DELETE' | 'PATCH'
-  /** @deprecated 请使用受控组件的stop方法, 该属性已废弃 */
+  /** 传入signal需要同时传入abortController  */
   signal?: AbortSignal
   /** 回传EventSourceMessage, 以修改数据 */
-  onmessage?: (ev: T) => T | void
+  onmessage?: (ev: T, eventList: T[]) => T | void
+}
+
+export class TimeoutError extends Error {
+  constructor(message: string) {
+    super(message)
+    this.name = 'TimeoutError'
+  }
 }
 
 /** fetch的封装类 */
 class StreamFetcher {
-  constructor() {}
+   clientOnError: ((err: any) => number | null | undefined | void) | undefined = undefined
+  constructor() {
+    
+  }
   /**
    * 请求拦截器
    */
@@ -77,7 +86,7 @@ class StreamFetcher {
    */
   protected async interceptorsResponse<T>(response: EventSourceMessage) {
     try {
-      const res: T = JSON.parse(response.data)
+      const res: T = response.data && JSON.parse(response.data)
       return res
     } catch (error) {
       this.errorHandler(error)
@@ -86,40 +95,53 @@ class StreamFetcher {
 
   protected errorHandler(error: unknown) {
     console.log(error, 'error')
+    this.clientOnError?.(error)
     return error
   }
 
   protected timeoutHandler(controller: AbortController, timeout: number = 15000) {
-    let timer: number = 0
-    if (timeout) {
-      timer = delay(() => {
-        controller.abort(new Error('网络请求超时，请稍后再试'))
-      }, timeout)
+    let timer: any
+    const resetTimer = () => {
+      clearTimeout(timer)
+      if (timeout) {
+        timer = setTimeout(() => {
+          const errorMessage = 'timeout'
+          controller.abort(new TimeoutError(errorMessage))
+          this.errorHandler(new TimeoutError(errorMessage))
+        }, timeout)
+      }
     }
-    return [timer, controller.signal] as const
+
+    resetTimer()
+    const getTimer = () => timer
+    return [getTimer, controller.signal, resetTimer] as const
   }
 
   protected finallyHandler() {}
 
   public fetch = async <T>(url: string, params: FetchEventSourceInitExtends<T>) => {
-    const [timer, signal] = this.timeoutHandler(params.abortController!, params.timeout || 15000)
+    this.clientOnError = params.onerror
+    const [getTimer,, resetTimer] = this.timeoutHandler(params.abortController!, params.timeout)
     try {
       const req = await this.interceptorsRequest({ url, ...params })
       await fetchEventSource(req.url, {
         ...params,
         ...req.options,
-        signal,
+        signal: undefined,
         onmessage: async (ev) => {
           const res = await this.interceptorsResponse<T>(ev)
-          params?.onmessage?.(res!)
+          if (!res) return
+          console.log(res, 'event')
+          params?.onmessage?.(res!, [])
+          resetTimer()
         },
       })
     } catch (error) {
       throw this.errorHandler(error)
     } finally {
       this.finallyHandler()
-      if (timer) {
-        clearTimeout(timer)
+      if (getTimer()) {
+        clearTimeout(getTimer())
       }
     }
   }
