@@ -9,7 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@microsoft/fetch-event-source": "^2.0.1",
+    "@microsoft/fetch-event-source": "workspace:*",
     "@repo/stream": "workspace:*",
     "antd": "^5.20.3",
     "classnames": "^2.5.1",

@@ -27,6 +27,21 @@ importers:
         specifier: ^2.0.14
         version: 2.0.14
 
+  apps/Fetch-event-source:
+    devDependencies:
+      '@types/jasmine':
+        specifier: ^4.3.1
+        version: 4.6.4
+      rimraf:
+        specifier: ^3.0.2
+        version: 3.0.2
+      source-map-support:
+        specifier: ^0.5.19
+        version: 0.5.21
+      typescript:
+        specifier: ^4.2.4
+        version: 4.9.5
+
   apps/Server:
     dependencies:
       compression:
@@ -49,8 +64,8 @@ importers:
   apps/Stream:
     dependencies:
       '@microsoft/fetch-event-source':
-        specifier: ^2.0.1
-        version: 2.0.1
+        specifier: workspace:*
+        version: link:../Fetch-event-source
       lodash:
         specifier: ^4.17.21
         version: 4.17.21
@@ -113,8 +128,8 @@ importers:
   apps/Template:
     dependencies:
       '@microsoft/fetch-event-source':
-        specifier: ^2.0.1
-        version: 2.0.1
+        specifier: workspace:*
+        version: link:../Fetch-event-source
       '@repo/stream':
         specifier: workspace:*
         version: link:../Stream
@@ -194,21 +209,6 @@ importers:
       vite-plugin-sass-dts:
         specifier: ^1.3.25
         version: 1.3.25(postcss@8.4.41)(prettier@3.2.5)(sass@1.77.8)(vite@5.4.2(sass@1.77.8))
-
-  packages/Fetch-event-source:
-    devDependencies:
-      '@types/jasmine':
-        specifier: ^4.3.1
-        version: 4.6.4
-      rimraf:
-        specifier: ^3.0.2
-        version: 3.0.2
-      source-map-support:
-        specifier: ^0.5.19
-        version: 0.5.21
-      typescript:
-        specifier: ^4.2.4
-        version: 4.9.5
 
 packages:
 
@@ -615,9 +615,6 @@ packages:
   '@microsoft/api-extractor@7.47.4':
     resolution: {integrity: sha512-HKm+P4VNzWwvq1Ey+Jfhhj/3MjsD+ka2hbt8L5AcRM95lu1MFOYnz3XlU7Gr79Q/ZhOb7W/imAKeYrOI0bFydg==}
     hasBin: true
-
-  '@microsoft/fetch-event-source@2.0.1':
-    resolution: {integrity: sha512-W6CLUJ2eBMw3Rec70qrsEW0jOm/3twwJv21mrmj2yORiaVmVYGS4sSS5yUwvQc1ZlDLYGPnClVWmUUMagKNsfA==}
 
   '@microsoft/tsdoc-config@0.17.0':
     resolution: {integrity: sha512-v/EYRXnCAIHxOHW+Plb6OWuUoMotxTN0GLatnpOb1xq0KuTNw/WI3pamJx/UbsoJP5k9MCw1QxvvhPcF9pH3Zg==}
@@ -3429,8 +3426,6 @@ snapshots:
       typescript: 5.4.2
     transitivePeerDependencies:
       - '@types/node'
-
-  '@microsoft/fetch-event-source@2.0.1': {}
 
   '@microsoft/tsdoc-config@0.17.0':
     dependencies:

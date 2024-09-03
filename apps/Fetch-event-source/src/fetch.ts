@@ -64,6 +64,8 @@ export function fetchEventSource(input: RequestInfo, {
     fetch: inputFetch,
     ...rest
 }: FetchEventSourceInit) {
+    console.log('进入fetchEventSource');
+    
     return new Promise<void>((resolve, reject) => {
         // make a copy of the input headers since we may modify it below:
         const headers = { ...inputHeaders };
@@ -100,6 +102,8 @@ export function fetchEventSource(input: RequestInfo, {
         const fetch = inputFetch ?? window.fetch;
         const onopen = inputOnOpen ?? defaultOnOpen;
         async function create() {
+            console.log('调用create');
+            
             curRequestController = new AbortController();
             try {
                 const response = await fetch(input, {
