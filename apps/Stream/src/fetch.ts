@@ -19,7 +19,6 @@ export interface EventMessageType<T> extends Omit<EventSourceMessage, 'data'> {
 export interface FetchEventSourceInitExtends<T> extends Omit<FetchEventSourceInit, 'onmessage'> {
   /** 接口需要传递的参数, 如果是get方法, 会拼接到url中, 如果是post方法, 会放在body中 */
   params?: { onmessage?: (ev: T) => T; [key: string]: any }
-  abortController?: AbortController
   timeout?: number
   headers?: Record<string, string>
   method?: 'POST' | 'GET' | 'PUT' | 'DELETE' | 'PATCH'
@@ -38,14 +37,14 @@ export class TimeoutError extends Error {
 
 /** fetch的封装类 */
 class StreamFetcher {
-   clientOnError: ((err: any) => number | null | undefined | void) | undefined = undefined
-  constructor() {
-    
-  }
+  protected clientOnError: ((err: any) => number | null | undefined | void) | undefined = undefined
+  protected abortController: AbortController | undefined = undefined
+  public eventList: any[] = []
+  constructor() {}
   /**
    * 请求拦截器
    */
-  async interceptorsRequest(props: RequestProps): Promise<{ url: string; options: FetchEventSourceInit }> {
+  protected async interceptorsRequest(props: RequestProps): Promise<{ url: string; options: FetchEventSourceInit }> {
     const { url: urlFromProps, method, params, headers: customHeader = {}, ...rest } = props
     let queryParams = '' // url参数
     let requestPayload = '' // 请求体数据
@@ -84,7 +83,7 @@ class StreamFetcher {
   /**
    * 响应拦截器
    */
-  protected async interceptorsResponse<T>(response: EventSourceMessage) {
+  protected interceptorsResponse<T>(response: EventSourceMessage) {
     try {
       const res: T = response.data && JSON.parse(response.data)
       return res
@@ -99,14 +98,14 @@ class StreamFetcher {
     return error
   }
 
-  protected timeoutHandler(controller: AbortController, timeout: number = 15000) {
+  protected timeoutHandler(timeout: number = 15000) {
     let timer: any
     const resetTimer = () => {
       clearTimeout(timer)
       if (timeout) {
         timer = setTimeout(() => {
           const errorMessage = 'timeout'
-          controller.abort(new TimeoutError(errorMessage))
+          this.abortController?.abort?.(new TimeoutError(errorMessage))
           this.errorHandler(new TimeoutError(errorMessage))
         }, timeout)
       }
@@ -114,27 +113,33 @@ class StreamFetcher {
 
     resetTimer()
     const getTimer = () => timer
-    return [getTimer, controller.signal, resetTimer] as const
+    return [getTimer, resetTimer] as const
   }
 
   protected finallyHandler() {}
 
   public fetch = async <T>(url: string, params: FetchEventSourceInitExtends<T>) => {
+    this.reset()
     this.clientOnError = params.onerror
-    const [getTimer,, resetTimer] = this.timeoutHandler(params.abortController!, params.timeout)
+    this.abortController = new AbortController()
+    const [getTimer, resetTimer] = this.timeoutHandler(params.timeout)
     try {
       const req = await this.interceptorsRequest({ url, ...params })
+
+      const messageHandler = (ev: EventSourceMessage) => {
+        const res = this.interceptorsResponse<T>(ev)
+        if (!res) return
+        this.eventList = [...this.eventList, res]
+        // console.log(res, 'event')
+        params?.onmessage?.(res!, this.eventList)
+        resetTimer()
+      }
+
       await fetchEventSource(req.url, {
         ...params,
         ...req.options,
-        signal: undefined,
-        onmessage: async (ev) => {
-          const res = await this.interceptorsResponse<T>(ev)
-          if (!res) return
-          console.log(res, 'event')
-          params?.onmessage?.(res!, [])
-          resetTimer()
-        },
+        signal: this.abortController.signal,
+        onmessage: messageHandler,
       })
     } catch (error) {
       throw this.errorHandler(error)
@@ -144,6 +149,17 @@ class StreamFetcher {
         clearTimeout(getTimer())
       }
     }
+  }
+
+  public getEventList = () => this.eventList
+
+  public abort = () => {
+    this.abortController?.abort?.()
+  }
+
+  public reset = () => {
+    this.abortController = undefined
+    this.eventList = []
   }
 }
 

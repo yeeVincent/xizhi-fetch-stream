@@ -1,10 +1,7 @@
-import { type Dispatch, type FC, forwardRef, type SetStateAction, useImperativeHandle, useRef } from 'react'
+import { type Dispatch, type FC, forwardRef, type SetStateAction, useImperativeHandle, useRef, useState } from 'react'
 import classNames from 'classnames'
 
 import { delay } from 'lodash'
-
-
-import { handleError } from './ErrorStrategy'
 
 import portraitStyles from '../../App.module.scss'
 import FetchStream, { FetchComponentRef } from '@repo/stream'
@@ -30,6 +27,8 @@ interface DataType {
 
 const StreamComponent = forwardRef<StreamComponentRef, Props>((props, propsRef) => {
   const {  setHistory, handleScrollToBottom,  } = props
+
+  const [streamList, setStreamList] = useState([])
   const ref = useRef<FetchComponentRef>(null)
   const baseUrl = 'http://localhost:3000'
   const url = '/stream'
@@ -39,11 +38,11 @@ const StreamComponent = forwardRef<StreamComponentRef, Props>((props, propsRef) 
     Auth: '123456'
   }
   // 正常结束
-  const handleFinish = () => {
+  const handleFinish = (eventList: any[]) => {
     delay(() => {
       if(!ref.current)return
-      const content = ref.current?.streamList.map((stream) => stream.data.content).join('')
-      console.log(ref.current?.streamList, 'content')
+      const content = eventList.map((stream) => stream.data.content).join('')
+      // console.log(eventList, 'content')
 
       setHistory((prev) => {
         const lastItem = prev.splice(-1, 1)[0]
@@ -62,12 +61,10 @@ const StreamComponent = forwardRef<StreamComponentRef, Props>((props, propsRef) 
       params: {
         sse_key,
       },
-      onmessage(event) {
+      onmessage(event, eventList) {
         handleScrollToBottom()
-        if (event.code !== 200) return handleError(event.code, setHistory)
         if (event.data.finish) {
-          handleFinish()
-          return event
+          handleFinish(eventList)
         }
         return event
       },
@@ -77,13 +74,9 @@ const StreamComponent = forwardRef<StreamComponentRef, Props>((props, propsRef) 
   useImperativeHandle(propsRef, () => {
 
     return {
-      streamList: ref.current!.streamList!,
       start: start,
       stop: ref.current!.stop!,
       reset: ref.current!.reset!,
-      setStreamItem: ref.current!.setStreamItem!,
-      getStreamItem: ref.current!.getStreamItem!,
-      removeStreamItem: ref.current!.removeStreamItem!,
     }
   })
 
@@ -93,7 +86,7 @@ const StreamComponent = forwardRef<StreamComponentRef, Props>((props, propsRef) 
   }
   return (
     <div className={classNames(styles.op_streamContainer,)}>
-      <FetchStream ref={ref} CustomStreamItem={CustomStreamItem}></FetchStream>
+      <FetchStream streamList={streamList} setStreamList={setStreamList} ref={ref} CustomStreamItem={CustomStreamItem}></FetchStream>
       <div className={styles.op_streamContainer__loading}></div>
     </div>
   )

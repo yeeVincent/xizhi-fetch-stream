@@ -1,4 +1,4 @@
-import { type FC, forwardRef, useEffect, useImperativeHandle, useRef } from 'react'
+import { type FC, forwardRef, useImperativeHandle } from 'react'
 
 import StreamFetcher, { type FetchEventSourceInitExtends } from './fetch'
 import StreamPanel from './panel'
@@ -18,20 +18,18 @@ export interface FetchComponentRef {
 
 const FetchStream = forwardRef<FetchComponentRef, FetchComponentProps>((props, ref) => {
   const { CustomStreamItem, setStreamList, streamList } = props
-  const { fetch } = new StreamFetcher()
-  const contentRef = useRef<any[]>([])
+  const { fetch, abort, getEventList, reset: fetcherReset } = new StreamFetcher()
   // 设置流的内容
-  const setList = (event:any) => {
-    contentRef.current = [...contentRef.current, event]
-    setStreamList(Array.from(contentRef.current.values()))
+  const setList = (eventList: any) => {
+    setStreamList([...eventList])
   }
   const reset = () => {
-    contentRef.current = []
     setStreamList([])
+    fetcherReset()
   }
-  const abortControllerRef = useRef<AbortController>(new AbortController())
-
   async function start<T>(url: string, params: FetchEventSourceInitExtends<T>) {
+    console.log('执行start')
+
     const defaultConfig: Partial<FetchEventSourceInitExtends<T>> = {
       method: 'GET',
       params: {},
@@ -40,24 +38,20 @@ const FetchStream = forwardRef<FetchComponentRef, FetchComponentProps>((props, r
         'Content-Type': 'application/json',
       },
     }
-    abortControllerRef.current = params.abortController || new AbortController()
-    // 外部传入的signal会在此处被替换
-    params.signal = abortControllerRef.current.signal
     fetch<T>(url, {
       ...defaultConfig,
       ...params,
-      abortController: abortControllerRef.current,
-      onmessage(ev) {
+      onmessage(ev, eventList) {
         if (!ev) return
 
-        setList(ev)
-        params.onmessage?.(ev, contentRef.current)
+        params.onmessage?.(ev, getEventList())
+        setList(eventList)
       },
     })
   }
 
   const stop = (cb?: any) => {
-    abortControllerRef.current.abort()
+    abort?.()
     cb?.()
   }
 
@@ -66,13 +60,6 @@ const FetchStream = forwardRef<FetchComponentRef, FetchComponentProps>((props, r
     stop,
     reset,
   }))
-
-  useEffect(() => {
-    return () => {
-      reset()
-      stop()
-    }
-  }, [])
 
   return <StreamPanel streamList={streamList} CustomStreamItem={CustomStreamItem}></StreamPanel>
 })
