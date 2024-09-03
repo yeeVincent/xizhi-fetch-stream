@@ -11,7 +11,6 @@ interface Props {
   setHistory: Dispatch<SetStateAction<HistoryMessageItem[]>>
 
   handleScrollToBottom: () => void
-
 }
 
 interface DataType {
@@ -24,23 +23,22 @@ interface DataType {
   msg: string
 }
 
-
 const StreamComponent = forwardRef<StreamComponentRef, Props>((props, propsRef) => {
-  const {  setHistory, handleScrollToBottom,  } = props
+  const { setHistory, handleScrollToBottom } = props
 
   const [streamList, setStreamList] = useState([])
   const ref = useRef<FetchComponentRef>(null)
   const baseUrl = 'http://localhost:3000'
   const url = '/stream'
-  const styles =  portraitStyles
+  const styles = portraitStyles
 
   const defaultHeaders = {
-    Auth: '123456'
+    Auth: '123456',
   }
   // 正常结束
   const handleFinish = (eventList: any[]) => {
     delay(() => {
-      if(!ref.current)return
+      if (!ref.current) return
       const content = eventList.map((stream) => stream.data.content).join('')
       // console.log(eventList, 'content')
 
@@ -53,7 +51,7 @@ const StreamComponent = forwardRef<StreamComponentRef, Props>((props, propsRef) 
     }, 0)
   }
   function start(sse_key: string) {
-    if(!ref.current)return
+    if (!ref.current) return
     ref.current.start<DataType>(baseUrl + url, {
       headers: {
         ...defaultHeaders,
@@ -72,7 +70,6 @@ const StreamComponent = forwardRef<StreamComponentRef, Props>((props, propsRef) 
   }
 
   useImperativeHandle(propsRef, () => {
-
     return {
       start: start,
       stop: ref.current!.stop!,
@@ -85,8 +82,12 @@ const StreamComponent = forwardRef<StreamComponentRef, Props>((props, propsRef) 
     return <span className={styles.op}>{event.data.content}</span>
   }
   return (
-    <div className={classNames(styles.op_streamContainer,)}>
-      <FetchStream streamList={streamList} setStreamList={setStreamList} ref={ref} CustomStreamItem={CustomStreamItem}></FetchStream>
+    <div className={classNames(styles.op_streamContainer)}>
+      <FetchStream
+        streamList={streamList}
+        setStreamList={setStreamList}
+        ref={ref}
+        CustomStreamItem={CustomStreamItem}></FetchStream>
       <div className={styles.op_streamContainer__loading}></div>
     </div>
   )

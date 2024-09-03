@@ -1,4 +1,4 @@
-import { FetchComponentRef } from "@repo/stream";
+import { FetchComponentRef } from '@repo/stream'
 
 export interface StreamComponentRef extends FetchComponentRef {
   start: (sse_key: string) => void
