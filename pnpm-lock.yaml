@@ -64,8 +64,8 @@ importers:
   apps/Stream:
     dependencies:
       '@microsoft/fetch-event-source':
-        specifier: workspace:*
-        version: link:../Fetch-event-source
+        specifier: ^2.0.1
+        version: 2.0.1
       lodash:
         specifier: ^4.17.21
         version: 4.17.21
@@ -615,6 +615,9 @@ packages:
   '@microsoft/api-extractor@7.47.4':
     resolution: {integrity: sha512-HKm+P4VNzWwvq1Ey+Jfhhj/3MjsD+ka2hbt8L5AcRM95lu1MFOYnz3XlU7Gr79Q/ZhOb7W/imAKeYrOI0bFydg==}
     hasBin: true
+
+  '@microsoft/fetch-event-source@2.0.1':
+    resolution: {integrity: sha512-W6CLUJ2eBMw3Rec70qrsEW0jOm/3twwJv21mrmj2yORiaVmVYGS4sSS5yUwvQc1ZlDLYGPnClVWmUUMagKNsfA==}
 
   '@microsoft/tsdoc-config@0.17.0':
     resolution: {integrity: sha512-v/EYRXnCAIHxOHW+Plb6OWuUoMotxTN0GLatnpOb1xq0KuTNw/WI3pamJx/UbsoJP5k9MCw1QxvvhPcF9pH3Zg==}
@@ -3426,6 +3429,8 @@ snapshots:
       typescript: 5.4.2
     transitivePeerDependencies:
       - '@types/node'
+
+  '@microsoft/fetch-event-source@2.0.1': {}
 
   '@microsoft/tsdoc-config@0.17.0':
     dependencies:

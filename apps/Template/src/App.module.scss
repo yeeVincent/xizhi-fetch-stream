@@ -1,62 +1,41 @@
-@mixin flexConfig($flexDirection: row, $alignItems: center, $justifyContent: flex-start) {
-  display: flex;
-  flex-direction: $flexDirection;
-  align-items: $alignItems;
-  justify-content: $justifyContent;
-}
-
-@mixin FontStyle($fontSize: 14, $lineHeight: 18, $color: #fff, $fontWeight: normal) {
-  font-size: $fontSize * 1px;
-  font-family: 'PingFang SC';
-  color: $color;
-  font-weight: $fontWeight;
-  line-height: $lineHeight * 1px;
-}
-
-.askModal {
-  width: 741px !important;
-}
-
-.askModalContent {
-  margin: 0;
-  scrollbar-width: 0;
-
-  ::-webkit-scrollbar {
-    width: 0;
-  }
-
-  border-radius: 15px 15px 0 0;
-}
-
 .askWrapper {
   --color-theme-main: #1b56ff;
-
   position: relative;
-  @include flexConfig(column, center, flex-end);
   overflow: hidden;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  flex-direction: column;
 
   .askWrapperInner {
     width: 100%;
     height: calc(60vh - 68px);
-
-    @include flexConfig(column, center, flex-end);
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    flex-direction: column;
 
     .messageWrapper {
       width: 100%;
-      @include flexConfig(column, stretch, flex-start);
       padding: 20px 0;
       flex: 1;
       box-sizing: border-box;
       overflow: scroll;
+      display: flex;
+      justify-content: flex-start;
+      align-items: stretch;
+      flex-direction: column;
 
       .meContainer {
         align-self: flex-end;
         margin-bottom: 12px;
         margin-left: 24px;
-        @include flexConfig(row, center, flex-end);
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        flex-direction: row;
 
         .me {
-          // @include flexConfig(row, center, center);
           word-break: break-all;
           padding: 12px;
           gap: 10px;
@@ -69,7 +48,6 @@
           font-style: normal;
           font-weight: 400;
           line-height: 24px;
-          /* 150% */
         }
 
         .errorBtn {
@@ -80,21 +58,28 @@
           border-radius: 50%;
           margin-right: 8px;
 
-          :active {
-            border: none;
-          }
+         
 
-          @include flexConfig(row, center, center);
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          flex-direction: row;
 
           .errorIcon {
             cursor: pointer;
+          }
+          &:active {
+            border: none;
           }
         }
       }
 
       .opContainer {
         margin-bottom: 32px;
-        @include flexConfig(row, center, flex-start);
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        flex-direction: row;
 
         .op {
           padding: 12px;
@@ -104,16 +89,25 @@
           align-self: stretch;
           border-radius: 0px 12px 12px 12px;
           background: var(--color-bg-accent-gray-subtle-default, #f5f6fa);
-          @include FontStyle(16, 24, #101114, 400);
+          font-size: 16px;
+          color: #101114;
+          font-weight: 400;
+          line-height: 24px;
         }
 
         .reviewContainer {
           align-self: flex-end;
-          @include flexConfig(row, center, flex-end);
+          display: flex;
+          justify-content: flex-end;
+          align-items: center;
+          flex-direction: row;
 
           .review {
             margin-right: 24px;
-            @include flexConfig(row, center, center);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: row;
             gap: 12px;
 
             .thumbIcon__good {
@@ -145,16 +139,20 @@
       .op_streamContainer {
         align-self: flex-start;
         margin-bottom: 8px;
-        @include flexConfig(row, center, flex-start);
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        flex-direction: row;
         flex-wrap: wrap;
         border-radius: 0px 12px 12px 12px;
         padding: 12px;
         margin-right: 24px;
         background: var(--color-bg-accent-gray-subtle-default, #f5f6fa);
-        @include FontStyle(16, 24, #101114, 400);
+        font-size: 16px;
+        color: #101114;
+        font-weight: 400;
+        line-height: 24px;
         gap: 0px;
-
-        .op {}
 
         .op_streamContainer__loading {
           display: block;
@@ -185,7 +183,10 @@
     .askModalAlertContainer {
       height: 48px;
       box-sizing: border-box;
-      @include flexConfig(row, center, space-between);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-direction: row;
       gap: 5px;
     }
 
@@ -213,8 +214,12 @@
         height: 28px;
         background: var(--color-theme-main);
         outline: none;
-        @include FontStyle(14, 20, #fff, 400);
+        font-size: 14px;
+        color: #fff;
+        font-weight: 400;
+        line-height: 20px;
       }
+
       .askModalSendText__noContent {
         position: absolute;
         right: 10px;
@@ -223,12 +228,18 @@
         height: 28px;
         background: var(--color-bg-accent-gray-bolder-disable, #e4e6ed);
         outline: none;
-        @include FontStyle(14, 20, #fff, 400);
+        font-size: 14px;
+        color: #fff;
+        font-weight: 400;
+        line-height: 20px;
       }
     }
   }
 }
 
 .errorTip {
-  @include FontStyle(12, 16, #fff, 500);
+  font-size: 12px;
+  color: #fff;
+  font-weight: 500;
+  line-height: 16px;
 }
