@@ -4,14 +4,6 @@
   "description": "A better API for making Event Source requests, with all the features of fetch()",
   "homepage": "https://github.com/Azure/fetch-event-source#readme",
   "repository": "github:Azure/fetch-event-source",
-  "bugs": {
-    "url": "https://github.com/Azure/fetch-event-source/issues"
-  },
-  "author": "Microsoft",
-  "license": "MIT",
-  "main": "lib/cjs/index.js",
-  "module": "lib/esm/index.js",
-  "types": "lib/cjs/index.d.ts",
   "sideEffects": false,
   "exports": "./src/index.ts",
   "scripts": {

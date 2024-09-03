@@ -39,3 +39,13 @@ export interface HistoryMessageItem {
   feedback: FeedbackStatus
   sse_key?: string
 }
+
+export interface DataType {
+  data: {
+    id: string
+    content: string
+    finish: boolean
+  }
+  code: number
+  msg: string
+}

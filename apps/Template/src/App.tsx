@@ -3,15 +3,36 @@ import classNames from 'classnames'
 import { Fragment } from 'react/jsx-runtime'
 import { Button, Divider, Modal } from 'antd'
 import TextArea from 'antd/es/input/TextArea'
-import { useRef, useState } from 'react'
-import StreamComponent from './components/StreamComponent'
-import { AskMessageStatus, FeedbackStatus, HistoryMessageItem, StreamComponentRef } from './type'
+import { FC, useRef, useState } from 'react'
+import { AskMessageStatus, DataType, FeedbackStatus, HistoryMessageItem } from './type'
+import FetchStream, { FetchComponentRef } from '@repo/stream'
+import { delay } from 'lodash'
 
 export const App = () => {
   const [history, setHistory] = useState<HistoryMessageItem[]>([])
   const scrollDomRef = useRef<HTMLDivElement>(null)
   const [text, setText] = useState('')
-  const streamComponentRef = useRef<StreamComponentRef>(null)
+  const baseUrl = 'http://localhost:3000'
+  const url = '/stream'
+  const [streamList, setStreamList] = useState([])
+  const ref = useRef<FetchComponentRef>(null)
+  const defaultHeaders = {
+    Authorization: 'token xxx',
+  }
+  // 正常结束
+  const handleFinish = (eventList: any[]) => {
+    delay(() => {
+      if (!ref.current) return
+      const content = eventList.map((stream) => stream.data.content).join('')
+
+      setHistory((prev) => {
+        const lastItem = prev.splice(-1, 1)[0]
+        lastItem.reply_content = content
+        lastItem.status = AskMessageStatus.Completed
+        return [...prev, lastItem]
+      })
+    }, 0)
+  }
 
   const handleScrollToBottom = (behavior: ScrollBehavior = 'smooth') => {
     if (scrollDomRef.current) {
@@ -26,7 +47,23 @@ export const App = () => {
   }
 
   const fetchSSE = (sse_key: string) => {
-    streamComponentRef.current?.start(sse_key)
+    if (!ref.current) return
+    ref.current.start<DataType>(baseUrl + url, {
+      headers: {
+        ...defaultHeaders,
+      },
+      params: {
+        sse_key,
+      },
+      onmessage(event, eventList) {
+        console.log(event, 'event');
+        handleScrollToBottom()
+        if (event.data.finish) {
+          handleFinish(eventList)
+        }
+        return event
+      },
+    })
   }
 
   async function sendMessage() {
@@ -47,6 +84,11 @@ export const App = () => {
     setText('')
     fetchSSE('sse_key')
     handleScrollToBottom()
+  }
+
+  const CustomStreamItem: FC<{ event: DataType }> = (props) => {
+    const { event } = props
+    return <span className={styles.op}>{event?.data?.content}</span>
   }
   return (
     <>
@@ -80,10 +122,14 @@ export const App = () => {
                     )}
                     {!item.reply_content &&
                       (item.status === AskMessageStatus.Processing || item.status === AskMessageStatus.Sending) && (
-                        <StreamComponent
-                          ref={streamComponentRef}
-                          setHistory={setHistory}
-                          handleScrollToBottom={handleScrollToBottom}></StreamComponent>
+                        <div className={classNames(styles.op_streamContainer)}>
+                          <FetchStream
+                            streamList={streamList}
+                            setStreamList={setStreamList}
+                            ref={ref}
+                            CustomStreamItem={CustomStreamItem}></FetchStream>
+                          <div className={styles.op_streamContainer__loading}></div>
+                        </div>
                       )}
                   </Fragment>
                 )
