@@ -6,11 +6,14 @@
     "dev": "turbo dev",
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "publish-packages": "turbo run build && changeset version && changeset publish --since @repo/stream"
+    "publish-packages": "turbo run build && changeset version && changeset publish --since @repo/stream",
+    "prepare": "husky"
   },
   "devDependencies": {
     "@changesets/cli": "^2.27.7",
     "eslint": "^8.57.0",
+    "husky": "^9.1.5",
+    "lint-staged": "^15.2.10",
     "prettier": "^3.2.5",
     "turbo": "^2.0.14"
   },
@@ -19,5 +22,10 @@
   ],
   "version": "0.0.7",
   "packageManager": "pnpm@9.2.0",
-  "name": "cy-fetch-stream-monorepo"
+  "name": "cy-fetch-stream-monorepo",
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,json,css,scss,md}": [
+      "prettier --write"
+    ]
+  }
 }
