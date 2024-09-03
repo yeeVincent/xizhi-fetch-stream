@@ -1,4 +1,4 @@
-import { type FC, forwardRef, useImperativeHandle } from 'react'
+import { type FC, forwardRef, useImperativeHandle, useState } from 'react'
 
 import StreamFetcher, { type FetchEventSourceInitExtends } from './fetch'
 import StreamPanel from './panel'
@@ -6,8 +6,6 @@ import StreamPanel from './panel'
 export interface FetchComponentProps {
   /** 自定义 StreamItem 组件 */
   CustomStreamItem?: FC<{ event: any }>
-  setStreamList: any
-  streamList: any
 }
 
 export interface FetchComponentRef {
@@ -17,8 +15,9 @@ export interface FetchComponentRef {
 }
 
 const FetchStream = forwardRef<FetchComponentRef, FetchComponentProps>((props, ref) => {
-  const { CustomStreamItem, setStreamList, streamList } = props
+  const { CustomStreamItem, } = props
   const { fetch, abort, getEventList, reset: fetcherReset } = new StreamFetcher()
+  const [streamList, setStreamList] = useState<any[]>([])
   // 设置流的内容
   const setList = (eventList: any) => {
     setStreamList([...eventList])

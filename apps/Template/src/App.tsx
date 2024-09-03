@@ -14,7 +14,6 @@ export const App = () => {
   const [text, setText] = useState('')
   const baseUrl = 'http://localhost:3000'
   const url = '/stream'
-  const [streamList, setStreamList] = useState([])
   const ref = useRef<FetchComponentRef>(null)
   const defaultHeaders = {
     Authorization: 'token xxx',
@@ -127,8 +126,6 @@ export const App = () => {
                       (item.status === AskMessageStatus.Processing || item.status === AskMessageStatus.Sending) && (
                         <div className={classNames(styles.op_streamContainer)}>
                           <FetchStream
-                            streamList={streamList}
-                            setStreamList={setStreamList}
                             ref={ref}
                             CustomStreamItem={CustomStreamItem}></FetchStream>
                           <div className={styles.op_streamContainer__loading}></div>
