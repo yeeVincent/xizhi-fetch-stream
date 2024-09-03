@@ -1,4 +1,6 @@
 declare const classNames: {
+  readonly askModal: 'askModal'
+  readonly askModalContent: 'askModalContent'
   readonly askWrapper: 'askWrapper'
   readonly askWrapperInner: 'askWrapperInner'
   readonly messageWrapper: 'messageWrapper'

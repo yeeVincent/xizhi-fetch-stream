@@ -1,3 +1,19 @@
+
+.askModal {
+  width: 741px !important;
+}
+
+.askModalContent {
+  margin: 0;
+  scrollbar-width: 0;
+  border-radius: 15px 15px 0 0;
+
+  & ::-webkit-scrollbar {
+    width: 0;
+  }
+
+}
+
 .askWrapper {
   --color-theme-main: #1b56ff;
   position: relative;
@@ -68,7 +84,7 @@
           .errorIcon {
             cursor: pointer;
           }
-          &:active {
+          & :active {
             border: none;
           }
         }
