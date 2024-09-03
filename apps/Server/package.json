@@ -9,5 +9,9 @@
     "nodemon": "^3.1.4"
   },
   "version": "0.0.7",
-  "name": "@repo/server"
+  "name": "@repo/server",
+  "dependencies": {
+    "compression": "^1.7.4",
+    "express-sse": "^0.5.3"
+  }
 }

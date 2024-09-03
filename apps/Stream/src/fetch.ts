@@ -130,7 +130,7 @@ class StreamFetcher {
         const res = this.interceptorsResponse<T>(ev)
         if (!res) return
         this.eventList = [...this.eventList, res]
-        // console.log(res, 'event')
+
         params?.onmessage?.(res!, this.eventList)
         resetTimer()
       }

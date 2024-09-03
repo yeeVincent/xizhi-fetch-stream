@@ -60,6 +60,8 @@ const StreamComponent = forwardRef<StreamComponentRef, Props>((props, propsRef) 
         sse_key,
       },
       onmessage(event, eventList) {
+        console.log(event, 'event');
+        
         handleScrollToBottom()
         if (event.data.finish) {
           handleFinish(eventList)
@@ -79,7 +81,7 @@ const StreamComponent = forwardRef<StreamComponentRef, Props>((props, propsRef) 
 
   const CustomStreamItem: FC<{ event: DataType }> = (props) => {
     const { event } = props
-    return <span className={styles.op}>{event.data.content}</span>
+    return <span className={styles.op}>{event?.data?.content}</span>
   }
   return (
     <div className={classNames(styles.op_streamContainer)}>

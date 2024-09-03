@@ -96,7 +96,6 @@ export const App = () => {
                 classNames={{
                   textarea: classNames(
                     styles.textArea
-                    // text.length ? styles.textArea__hasContent : styles.textArea__noContent
                   ),
                 }}
                 value={text.trim()}

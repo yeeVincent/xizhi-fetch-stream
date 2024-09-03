@@ -1,10 +1,14 @@
 import express from 'express';
 import cors from 'cors';
+import compression from 'compression';
+import SSE from 'express-sse';
 
 const app = express();
 const port = 3000;
+const sse = new SSE();
 
 app.use(cors());
+app.use(compression()); // 使用 compression 中间件
 
 // 生成随机字符串的函数
 function generateRandomString(length) {
@@ -18,30 +22,30 @@ function generateRandomString(length) {
 }
 
 app.get('/stream', (req, res) => {
+  console.log('收到请求');
+  
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Content-Type', 'text/event-stream');
-  res.setHeader('Cache-Control', 'no-cache');
-  res.setHeader('Connection', 'keep-alive');
+  sse.init(req, res);
 
-  const message = generateRandomString(10); // 生成一个长度为1000的随机字符串
+  const message = generateRandomString(10); // 生成一个长度为10的随机字符串
   let index = 0;
 
   const intervalId = setInterval(() => {
     if (index < message.length) {
-      res.write(`id: ${index}\n`);
-      res.write(`data: ${message[index]}\n\n`);
+      const data = {id: index, code: 200, msg: 'success', data: {content: message[index], finish: false, t: +new Date()}};
+      sse.send(data);
       index += 1;
     } else {
       clearInterval(intervalId);
-      res.write('event: end\n');
-      res.write('data: Stream Ended\n\n');
-      res.end();
+      sse.send({ data: {  }, message: "Stream Ended"}, 'end');
+      res.end(); // 结束响应
+      
+      
     }
   }, 50);
 
   req.on('close', () => {
     clearInterval(intervalId);
-    res.end();
   });
 });
 
