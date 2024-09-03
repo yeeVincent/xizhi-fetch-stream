@@ -37,7 +37,7 @@ app.get('/stream', (req, res) => {
       index += 1;
     } else {
       clearInterval(intervalId);
-      sse.send({ data: {  }, message: "Stream Ended"}, 'end');
+      sse.send({ data: { finish: true }, message: "Stream Ended"}, 'end');
       res.end(); // 结束响应
       
       

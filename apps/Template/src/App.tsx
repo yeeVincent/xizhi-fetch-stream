@@ -82,8 +82,11 @@ export const App = () => {
       ]
     })
     setText('')
-    fetchSSE('sse_key')
-    handleScrollToBottom()
+    delay(() => {
+      // 需要delay, 因为FetchStream尚未加载完成
+        fetchSSE('sse_key')
+      handleScrollToBottom()
+    } ,0)
   }
 
   const CustomStreamItem: FC<{ event: DataType }> = (props) => {
