@@ -2,7 +2,7 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@repo/stream": ["apps/Stream/src"],
+      "xizhi-front-sse": ["apps/Stream/src"],
       "@repo/template": ["apps/Template/src"],
       "@microsoft/fetch-event-source": ["apps/Fetch-event-source/src"],
     },

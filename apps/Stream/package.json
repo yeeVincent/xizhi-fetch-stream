@@ -1,5 +1,5 @@
 {
-  "name": "@repo/stream",
+  "name": "xizhi-front-sse",
   "private": false,
   "version": "0.0.7",
   "type": "module",

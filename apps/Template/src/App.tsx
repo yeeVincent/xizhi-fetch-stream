@@ -5,7 +5,7 @@ import { Button, Divider, Modal } from 'antd'
 import TextArea from 'antd/es/input/TextArea'
 import { FC, useRef, useState } from 'react'
 import { AskMessageStatus, DataType, FeedbackStatus, HistoryMessageItem } from './type'
-import FetchStream, { FetchComponentRef } from '@repo/stream'
+import FetchStream, { FetchComponentRef } from 'xizhi-front-sse'
 import { delay } from 'lodash'
 
 export const App = () => {

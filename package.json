@@ -2,11 +2,11 @@
   "private": false,
   "scripts": {
     "copy-files": "cp -r ./apps/Stream/dist/* ./dist",
-    "build": "turbo run build && mkdir -p dist && pnpm run copy-files && node ./scripts/modify-package-name.js",
+    "build": "turbo run build && mkdir -p dist && pnpm run copy-files",
     "dev": "turbo dev",
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "publish-packages": "turbo run build && changeset version && changeset publish --since @repo/stream",
+    "publish-packages": "turbo run build && changeset version && changeset publish --since xizhi-front-sse",
     "prepare": "husky"
   },
   "devDependencies": {

@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@microsoft/fetch-event-source": "workspace:*",
-    "@repo/stream": "workspace:*",
+    "xizhi-front-sse": "workspace:*",
     "antd": "^5.20.3",
     "classnames": "^2.5.1",
     "lodash": "^4.17.21",
