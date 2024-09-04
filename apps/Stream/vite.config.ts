@@ -1,6 +1,8 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react-swc'
 import dts from 'vite-plugin-dts'
+import { copyFileSync } from 'fs';
+import { resolve } from 'path';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -11,6 +13,13 @@ export default defineConfig({
       outDir: 'dist/types', // 类型定义文件输出目录
       tsconfigPath: './tsconfig.app.json', // 指定 tsconfig 文件路径
     }),
+    {
+      name: 'copy-package-json',
+      closeBundle() {
+        copyFileSync(resolve(__dirname, 'package.json'), resolve(__dirname, 'dist', 'package.json'));
+        console.log('package.json has been copied to dist directory.');
+      }
+    }
   ],
   build: {
     lib: {

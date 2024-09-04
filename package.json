@@ -2,7 +2,7 @@
   "private": false,
   "scripts": {
     "copy-files": "cp -r ./apps/Stream/dist/* ./dist",
-    "build": "turbo run build && mkdir -p dist && pnpm run copy-files",
+    "build": "turbo run build && mkdir -p dist && pnpm run copy-files && node ./scripts/modify-package-name.js",
     "dev": "turbo dev",
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
